@@ -5,34 +5,39 @@ import { Building2, Shield, MapPin, Phone, Mail, Star, ChevronRight, Heart, Grad
 import { getLandingServices, getLandingTestimonials, getLandingHero } from '../data/store';
 
 export default function LandingPage() {
-  const [services, setServices] = useState([]);
-  const [testimonials, setTestimonials] = useState([]);
-  const [hero, setHero] = useState({ tagline: 'Premium Girls PG Living', title: 'KalpDev PG', subtitle: 'Comfort • Safety • Better Living', description: '', heroImage: '' });
-  const [loading, setLoading] = useState(true);
+  const DEFAULT_SERVICES = [
+    { id: '1', title: 'Gated Society', desc: 'Secure gated community with restricted access.', img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&h=400&fit=crop' },
+    { id: '2', title: 'CCTV Surveillance', desc: '24/7 CCTV monitoring across all floors.', img: 'https://images.unsplash.com/photo-1558002038-1055907df827?w=600&h=400&fit=crop' },
+    { id: '3', title: 'Security Guard', desc: 'Trained security personnel round the clock.', img: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&h=400&fit=crop' },
+    { id: '4', title: 'Mineral Drinking Water', desc: 'Pure RO mineral water 24/7.', img: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=600&h=400&fit=crop' },
+    { id: '5', title: 'Free High-Speed WiFi', desc: 'Unlimited internet for work and fun.', img: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&h=400&fit=crop' },
+    { id: '6', title: 'Fully Furnished PG', desc: 'Move-in ready with all furniture.', img: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&h=400&fit=crop' },
+  ];
+  const DEFAULT_TESTIMONIALS = [
+    { id: '1', name: 'Priya Patel', room: 'Room 302', text: 'Feels like home away from home. The management is very responsive.', rating: 5 },
+    { id: '2', name: 'Sneha Gupta', room: 'Room 201', text: 'Safe, clean, and affordable. Best PG for girls!', rating: 5 },
+    { id: '3', name: 'Anita Sharma', room: 'Room 203', text: 'Great community and career support. Highly recommended!', rating: 4 },
+  ];
+  const DEFAULT_HERO = { tagline: 'Premium Girls PG Living', title: 'KalpDev PG', subtitle: 'Comfort • Safety • Better Living', description: 'A safe and premium paying guest accommodation exclusively for girls — with career guidance, sports facilities, and a supportive community.', heroImage: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=700&h=500&fit=crop' };
+
+  const [services, setServices] = useState(DEFAULT_SERVICES);
+  const [testimonials, setTestimonials] = useState(DEFAULT_TESTIMONIALS);
+  const [hero, setHero] = useState(DEFAULT_HERO);
 
   useEffect(() => {
     const load = async () => {
-      const [s, t, h] = await Promise.all([getLandingServices(), getLandingTestimonials(), getLandingHero()]);
-      setServices(s);
-      setTestimonials(t);
-      setHero(h);
-      setLoading(false);
+      try {
+        const [s, t, h] = await Promise.all([getLandingServices(), getLandingTestimonials(), getLandingHero()]);
+        if (s && s.length > 0) setServices(s);
+        if (t && t.length > 0) setTestimonials(t);
+        if (h && h.title) setHero(h);
+      } catch (err) {
+        // Use defaults on error
+        console.log('Using default landing content');
+      }
     };
     load();
   }, []);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white font-poppins">
-        <div className="text-center">
-          <div className="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center mb-4 animate-pulse">
-            <Building2 className="w-6 h-6 text-white" />
-          </div>
-          <p className="text-gray-500">Loading...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen font-poppins bg-white">
