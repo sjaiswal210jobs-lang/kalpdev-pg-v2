@@ -25,6 +25,8 @@ export const DEPOSIT_PER_BED = 3500;
 export const TOTAL_ROOMS = 9;
 export const TOTAL_BEDS = 18;
 export const POINTS_TO_RUPEE = 10;
+export const REFERRAL_REWARD_RUPEES = 500;
+export const REFERRAL_REWARD_POINTS = 500 * 10; // 5000 points = ₹500
 
 // ===== UTILITY =====
 export function generateId() {
