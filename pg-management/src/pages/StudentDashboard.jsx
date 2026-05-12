@@ -189,7 +189,7 @@ export default function StudentDashboard() {
                 </div>
                 {/* WhatsApp Contact */}
                 <a
-                  href="https://wa.me/919999999999"
+                  href="https://wa.me/917350785606"
                   target="_blank"
                   rel="noreferrer"
                   className="mt-6 flex items-center justify-center gap-2 w-full py-3 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 rounded-xl hover:bg-green-100 dark:hover:bg-green-900/30 transition font-medium text-sm"
