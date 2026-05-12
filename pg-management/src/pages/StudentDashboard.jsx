@@ -18,7 +18,7 @@ export default function StudentDashboard() {
   const { rentRecords, electricityRecords, notices } = useData();
   const [tenant, setTenant] = useState(null);
   const [darkMode, setDarkMode] = useState(getDarkMode());
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('rewards');
 
   useEffect(() => {
     const t = getLoggedInStudent();
@@ -51,11 +51,11 @@ export default function StudentDashboard() {
   const isCurrentMonthPaid = rentHistory.some(r => r.month === currentMonth && r.paid);
 
   const tabs = [
+    { id: 'rewards', label: '🎁 Rewards', icon: Gift },
     { id: 'overview', label: 'Overview', icon: User },
     { id: 'rent', label: 'Rent History', icon: CreditCard },
     { id: 'electricity', label: 'Electricity', icon: Zap },
     { id: 'notices', label: 'Notices', icon: Bell },
-    { id: 'rewards', label: 'Rewards', icon: Gift },
   ];
 
   return (
