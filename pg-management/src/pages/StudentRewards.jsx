@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Gift, ShoppingBag, Star, ExternalLink, X } from 'lucide-react';
+import { Gift, ShoppingBag, Star, ExternalLink, X, Users, Send } from 'lucide-react';
 import {
-  addRewardsPurchase, redeemPoints, addRedemption,
-  getLoggedInStudent, getRewardsPoints, POINTS_TO_RUPEE
+  addRewardsPurchase, redeemPoints, addRedemption, addSharingDetail,
+  getLoggedInStudent, getRewardsPoints, POINTS_TO_RUPEE, REFERRAL_REWARD_RUPEES
 } from '../data/store';
 import { useData } from '../data/DataContext';
 
@@ -94,6 +94,9 @@ export default function StudentRewards() {
           {message}
         </motion.div>
       )}
+
+      {/* Referral Section */}
+      <ReferralCard tenant={tenant} setMessage={setMessage} />
 
       {/* Products to Compare */}
       <div>
@@ -240,6 +243,63 @@ export default function StudentRewards() {
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  );
+}
+
+function ReferralCard({ tenant, setMessage }) {
+  const [showReferForm, setShowReferForm] = useState(false);
+  const [referName, setReferName] = useState('');
+  const [referPhone, setReferPhone] = useState('');
+
+  const handleRefer = async (e) => {
+    e.preventDefault();
+    await addSharingDetail({
+      referrerName: tenant.name,
+      referrerPhone: tenant.phone,
+      referredName: referName,
+      referredPhone: referPhone,
+      status: 'pending',
+      date: new Date().toISOString().split('T')[0],
+      notes: 'Submitted by tenant via Student Portal',
+    });
+    setReferName('');
+    setReferPhone('');
+    setShowReferForm(false);
+    setMessage(`Referral submitted! You'll earn ₹${REFERRAL_REWARD_RUPEES} when they join.`);
+    setTimeout(() => setMessage(''), 4000);
+  };
+
+  return (
+    <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800 rounded-2xl p-6">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+            <Users className="w-6 h-6 text-green-600" />
+          </div>
+          <div>
+            <h3 className="font-bold text-gray-900 dark:text-white">Refer a Friend</h3>
+            <p className="text-sm text-green-700 dark:text-green-400">Earn ₹{REFERRAL_REWARD_RUPEES} for every successful referral!</p>
+          </div>
+        </div>
+      </div>
+      <p className="text-xs text-gray-600 dark:text-gray-400 mb-4">
+        Know someone looking for a PG? Refer them and get ₹{REFERRAL_REWARD_RUPEES} credited to your rewards when they join.
+      </p>
+      {!showReferForm ? (
+        <button onClick={() => setShowReferForm(true)} className="w-full py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2">
+          <Send className="w-4 h-4" /> Refer Someone Now
+        </button>
+      ) : (
+        <form onSubmit={handleRefer} className="space-y-3">
+          <input type="text" required placeholder="Friend's Name" value={referName} onChange={e => setReferName(e.target.value)} className="input-field" />
+          <input type="tel" required placeholder="Friend's Phone (10 digits)" maxLength={10} value={referPhone} onChange={e => setReferPhone(e.target.value)} className="input-field" />
+          <div className="flex gap-2">
+            <button type="submit" className="flex-1 py-2.5 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition text-sm">Submit Referral</button>
+            <button type="button" onClick={() => setShowReferForm(false)} className="px-4 py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-medium text-sm">Cancel</button>
+          </div>
+        </form>
+      )}
     </div>
   );
 }
