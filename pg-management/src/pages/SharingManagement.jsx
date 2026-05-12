@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Share2, Plus, X, Edit2, Trash2, Users, Phone, CheckCircle2, Clock, XCircle } from 'lucide-react';
 import {
   addSharingDetail, updateSharingDetail, deleteSharingDetail as removeSharing,
-  formatDate, generateId
+  formatDate, generateId, addPoints, REFERRAL_REWARD_POINTS, REFERRAL_REWARD_RUPEES
 } from '../data/store';
 import { useData } from '../data/DataContext';
 
@@ -46,6 +46,17 @@ export default function SharingManagement() {
 
   const handleStatusChange = async (id, status) => {
     await updateSharingDetail(id, { status });
+    // If converted, reward the referrer with ₹500 worth of points
+    if (status === 'converted') {
+      const detail = sharingDetails.find(d => d.id === id);
+      if (detail) {
+        // Find referrer tenant by name
+        const referrer = tenants.find(t => t.name === detail.referrerName);
+        if (referrer) {
+          await addPoints(referrer.id, REFERRAL_REWARD_POINTS, `Referral reward: ${detail.referredName} joined (₹${REFERRAL_REWARD_RUPEES})`);
+        }
+      }
+    }
   };
 
   const resetForm = () => {
@@ -70,7 +81,7 @@ export default function SharingManagement() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Sharing & Referrals</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Track referrals, room sharing requests, and tenant recommendations</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Track referrals — ₹{REFERRAL_REWARD_RUPEES} reward per successful referral</p>
         </div>
         <button onClick={() => setShowForm(true)} className="btn-premium flex items-center gap-2">
           <Plus className="w-4 h-4" /> Add Referral
