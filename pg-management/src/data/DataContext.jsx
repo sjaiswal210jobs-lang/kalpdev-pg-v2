@@ -19,21 +19,25 @@ export function DataProvider({ children }) {
   useEffect(() => {
     const unsubscribers = [];
 
-    unsubscribers.push(subscribeToCollection(COLLECTIONS.TENANTS, setTenants));
-    unsubscribers.push(subscribeToCollection(COLLECTIONS.RENT, setRentRecords));
-    unsubscribers.push(subscribeToCollection(COLLECTIONS.ELECTRICITY, setElectricityRecords));
-    unsubscribers.push(subscribeToCollection(COLLECTIONS.EXPENSES, setExpenses));
-    unsubscribers.push(subscribeToCollection(COLLECTIONS.VISITORS, setVisitors));
-    unsubscribers.push(subscribeToCollection(COLLECTIONS.NOTICES, setNotices));
-    unsubscribers.push(subscribeToCollection(COLLECTIONS.PAYMENT_REMINDERS, setPaymentReminders));
-    unsubscribers.push(subscribeToCollection(COLLECTIONS.SHARING, setSharingDetails));
-    unsubscribers.push(subscribeToCollection(COLLECTIONS.REWARDS_PRODUCTS, setRewardsProducts));
-    unsubscribers.push(subscribeToCollection(COLLECTIONS.REWARDS_PURCHASES, setRewardsPurchases));
+    try {
+      unsubscribers.push(subscribeToCollection(COLLECTIONS.TENANTS, setTenants));
+      unsubscribers.push(subscribeToCollection(COLLECTIONS.RENT, setRentRecords));
+      unsubscribers.push(subscribeToCollection(COLLECTIONS.ELECTRICITY, setElectricityRecords));
+      unsubscribers.push(subscribeToCollection(COLLECTIONS.EXPENSES, setExpenses));
+      unsubscribers.push(subscribeToCollection(COLLECTIONS.VISITORS, setVisitors));
+      unsubscribers.push(subscribeToCollection(COLLECTIONS.NOTICES, setNotices));
+      unsubscribers.push(subscribeToCollection(COLLECTIONS.PAYMENT_REMINDERS, setPaymentReminders));
+      unsubscribers.push(subscribeToCollection(COLLECTIONS.SHARING, setSharingDetails));
+      unsubscribers.push(subscribeToCollection(COLLECTIONS.REWARDS_PRODUCTS, setRewardsProducts));
+      unsubscribers.push(subscribeToCollection(COLLECTIONS.REWARDS_PURCHASES, setRewardsPurchases));
+    } catch (err) {
+      console.error('Firebase subscription error:', err);
+    }
 
-    // Give a moment for initial data to load
-    setTimeout(() => setLoading(false), 1000);
+    // Don't block rendering
+    setLoading(false);
 
-    return () => unsubscribers.forEach(unsub => unsub());
+    return () => unsubscribers.forEach(unsub => { try { unsub(); } catch(e) {} });
   }, []);
 
   const value = {
